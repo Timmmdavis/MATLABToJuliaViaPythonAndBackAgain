@@ -65,7 +65,7 @@ where PATH2PYTHON is something like (make sure this is in quotes) :
 "C:\\Users\\UserName\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"
 note on Windows you may need to use:  
 ```
-julia> ENV["PYTHON"]=raw"C:\\Users\\UserName\\AppData\\Local\\Programs\\Python\\Python37\\python.exe"  
+julia> ENV["PYTHON"]=raw"C:\Users\UserName\AppData\Local\Programs\Python\Python37\python.exe"  
 ```
 if you are getting the 'invalid escape sequence' error  
 then in julia use  
