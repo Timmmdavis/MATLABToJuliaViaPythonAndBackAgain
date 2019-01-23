@@ -32,6 +32,8 @@ This overhead is small if your code is repeatadly called, runs for long times an
 
 
 ## Installing PyCall etc windows:
+Note that PyCall can just be build normally (defualt settings) if you dont mind that MATLAB will not have error reporting from your python scripts. 
+In this case you will need to be able to call python from the cmd/terminal of your machine using the cmd 'python'.
 
 Install Julia 1.0.3 64 bit (https://julialang.org/downloads/)
 Make sure you can call from cmd.exe, i.e. 
@@ -109,6 +111,8 @@ In MATLAB terminal call:
 >> pyversion
 ```
 This should output your version of Python. This must match the one PyCall in Julia uses. 
+If this doesnt work I have added work around through the system command but there will be no python outputs in the MATLAB console. 
+Note some comments below assume you have MATLAB hooked up to python correctly.
 
 In MATLAB terminal call:
 ```

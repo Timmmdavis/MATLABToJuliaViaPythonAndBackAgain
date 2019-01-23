@@ -10,9 +10,20 @@ varargout=varargin;
 
 %Convert to Python (Need to be vectors to convert)
 Size=size(varargin{1}); %Get size for reshaping in python
-Size = py.numpy.array(Size);
-
 InputsSize=numel(varargin);
+
+try 
+    Size = py.numpy.array(Size);
+catch
+    disp('Python not loaded correctly with MATLAB')
+    for i=1:InputsSize
+        inputname(i)
+        writeNPY(varargin{i}, strcat(inputname(i),'.npy'))
+    end
+    return %leave func here
+end
+    
+
 for i=1:InputsSize
     %Assign 2 temp array
     temp=varargin{i};
