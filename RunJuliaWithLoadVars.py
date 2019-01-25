@@ -6,10 +6,17 @@ import os as OpSys
 
 def script():
 
+	print('in script')
+
 	#############Load Vars#############
 	#If we saved the vars in MATLAB then we load them here. 
 	a=np.load('a.npy')
 	b=np.load('b.npy')
+	
+	#If you want a as ints or floats for your julia scripts use the conversions below,
+	#(provided these inputs are single no's when defined and converted to numpy arrays in MATLAB e.g. "a=1")
+	#a=int(a);
+	#a=float(a);
 
 	#############Python bit#############
 	#Testing we can actually use python (not needed)

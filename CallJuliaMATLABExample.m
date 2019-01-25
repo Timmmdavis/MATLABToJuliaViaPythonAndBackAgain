@@ -16,7 +16,7 @@ catch
     disp('Python not loaded correctly with MATLAB')
     %Calling system command instead. You wont get good outputs in the
     %console with this. 
-    system('python RunJuliaWithLoadVars.py') 
+    system('python -c "from RunJuliaWithLoadVars import script; script()" >> Log.txt 2>&1') 
     %Remove temp matricies
     delete a.npy b.npy
 end
