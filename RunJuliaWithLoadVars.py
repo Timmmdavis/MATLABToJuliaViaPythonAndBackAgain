@@ -37,3 +37,6 @@ def script():
 	#############Save bit#############
 	#Now save as MATLAB matricies. 
 	scipy.io.savemat('PythonOutput.mat', dict(a=a,b=b,c=c,d=d))
+	
+if __name__ == "__main__":
+	script()

@@ -163,3 +163,105 @@ Undefined variable "py" or class "py.RunJulia.script".
 Error in CallJuliaMATLABExample (line 12)
 py.RunJulia.script(a,b);
 ```
+
+## Installing/Running on a server (No sudo access)
+Installing on a server (amd-64 Linux Redhat, CentOS release 6.7 (Final))
+Julia-1.0.2
+Matlab 2015a
+Python-3.6.1
+
+Download Julia and put onto server 
+To run Julia go to the containing folders /julia-x.x.x/bin and call
+```
+$ ./julia
+```
+to exit julia (and python later) call Cntl+d
+
+Now install Python, for me I ran into this issue 
+https://bugs.python.org/issue27979
+so downloaded the Gzipped source tarball from 
+https://www.python.org/downloads/release/python-361/
+place on the server and extract:
+```
+$ tar -xvzf Python-3.6.1.tgz 
+```
+to build go into the containing folder /Python-x.x.x and call
+```
+$ ./configure
+$ make
+```
+now to install pip  without rights access download get-pip.py from https://pip.pypa.io/en/stable/installing/
+paste this into your python dir and install
+``` 
+cp get-pip.py Python-3.6.1
+$ ./python get-pip.py --user
+$ ./python -m pip install julia numpy scipy matplotlib ipython jupyter panda --user
+```
+you should get some path warnings as you have added this locally. Note the path and add this. 
+https://serverfault.com/questions/102932/adding-a-directory-to-path-in-centos#303824
+https://serverfault.com/questions/102932/adding-a-directory-to-path-in-centos
+
+
+in Julia
+```
+julia> ]add PyCall
+] build PyCall
+```
+Check it built. 
+```
+julia> using PyCall 
+julia> PyCall.pyprogramname
+```
+
+Now we add Julia to the path, you will need to do this line each time you log onto the server (or add to your path permanently)
+```
+$ export PATH=/home/user/julia-1.0.2/bin/:$PATH
+```
+check it worked
+```
+$ printenv PATH
+```
+make sure you do this outside the MATLAB console
+to add permanently create a new file in home dir
+```
+$ vi .profile
+```
+add to file (top line)
+```
+export PATH=/home/user/julia-1.0.2/bin/:$PATH
+```
+save logout and in. 
+
+in /home/user/.local/bin #The julia PyCall dir that was added to the path. If we had admin rights it would be in /usr/bin change the top line of this to point to your installed local PyDir with Python built and Julia module installed
+```
+$ vi python-jl 
+```
+top line to:
+```
+#!/home/user/Python-3.6.1/python
+```
+the following cmd should work (show the julia banner)
+```
+$ ./python-jl -c 'from julia.Base import banner; banner()'
+```
+copy this file over to the folder containing the files of, I called the folder MATLAB2Julia
+https://github.com/Timmmdavis/MATLABToJuliaViaPythonAndBackAgain...
+using 
+```
+cp python-jl /home/user/MATLAB2Julia/python-jl
+```
+
+and the run CallJuliaMATLABExample but change the line:
+```
+system('python -c "from RunJuliaWithLoadVars import script; script()" >> Log.txt 2>&1') 
+```
+to
+```
+system('/home/user/MATLAB2Julia/python-jl RunJuliaWithLoadVars.py >> Log.txt 2>&1')
+```
+This should run
+
+Assuming we have https://github.com/Timmmdavis/JuliaTravisTest installed in julia. 
+If you have MATLAB running and want to do a "vi" command to edit the file put a ! infront. E.g. >> !vi CallJuliaMATLABExample.m
+If you get errors check the Log.txt
+exit MATLAB with >> exit
