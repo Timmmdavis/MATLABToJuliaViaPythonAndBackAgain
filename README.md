@@ -43,8 +43,8 @@ MATLAB then loads the .mat file (result)
 This workflow has some overhead due to:
 Opening a new Julia session each call
 Writing the MAT arrays in MATLAB
-Reading and writing the MAT arrays in Julia, note that precompiling the module MAT is not possible (20/2/2019) as the tests error. This means each call its recompiling (but doesnt take long). Pass small files through this first if its very slow.  
-As with PyCall there is some overhead (larger than using PyCall) but this is is still small if your code is repeatadly called and has long run times.
+Reading and writing the MAT arrays in Julia.
+As with PyCall there is some overhead but this is is still small if your code is repeatadly called and has long run times.
 
 ## Workflow 1: Installing PyCall etc windows:
 Note that PyCall can just be build normally (defualt settings) if you dont mind that MATLAB will not have error reporting from your python scripts. 
@@ -185,7 +185,7 @@ py.RunJulia.script(a,b);
 julia> ] add TravisTest
 julia> ] dev PackageCompiler
 julia> using PackageCompiler
-julia> new_image,old_image=PackageCompiler.compile_package("TravisTest", force = false)
+julia> new_image,old_image=PackageCompiler.compile_package("TravisTest","MAT", force = false)
 ```
 note if there are errors use 
 ```
