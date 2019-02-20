@@ -15,12 +15,17 @@ Python 3.7.2
 	panda==0.3.1  
 	julia==0.2.0  
 MATLAB R2018a  
-On The 16th January 2019.  
+On The 16th January 2019. 
 
-## Workflow
-MATLAB calls
-Python calls
-Julia sends data back to
+### Two options
+These files allow for two options:
+1. Using PyCall, this requires python hooked up to MATLAB correctly but does less reading and writing of data passed to Julia. 
+2. Using a precompiled image, this requires that your module can precompile with Julias 'PackageCompiler' and that the test scripts in this module use the same function input types as will be passed with MATLAB. 
+
+### Workflow 1
+MATLAB calls Python, Data is written into the Python format and stored on disk
+Python calls Julia and sends data over directly without writing data
+Julia runs and sends the resulting data back to Python without writing the data
 Python which writes results as a .mat file
 MATLAB then loads the .mat file 
 
@@ -30,8 +35,18 @@ PyCall running Julia
 Writing and reading the Julia results as .mat files in Python. 
 This overhead is small if your code is repeatadly called, runs for long times and Julia is 100x faster that MATLAB would be... :)
 
+### Workflow 2
+MATLAB calls Julia precomplied image, Data is written in .mat format.
+Julia Image loads the data, runs and writes the resulting data in .mat format
+MATLAB then loads the .mat file (result)
 
-## Installing PyCall etc windows:
+This workflow has some overhead due to:
+Opening a new Julia session each call
+Writing the MAT arrays in MATLAB
+Reading and writing the MAT arrays in Julia, note that precompiling the module MAT is not possible (20/2/2019) as the tests error. This means each call its recompiling (but doesnt take long). Pass small files through this first if its very slow.  
+As with PyCall there is some overhead (larger than using PyCall) but this is is still small if your code is repeatadly called and has long run times.
+
+## Workflow 1: Installing PyCall etc windows:
 Note that PyCall can just be build normally (defualt settings) if you dont mind that MATLAB will not have error reporting from your python scripts. 
 In this case you will need to be able to call python from the cmd/terminal of your machine using the cmd 'python'.
 
@@ -104,7 +119,7 @@ The result:
 1.0
 
 
-## MATLAB 2 Python 2 Julia
+### MATLAB 2 Python 2 Julia
 Now download this Repo, unzip and and in MATLAB go to this path (and add to Path). 
 In MATLAB terminal call:
 ```
@@ -144,7 +159,7 @@ Note that if you wrap the line d=j.SumArrays(a,b) in RunJulia.py with
 	print(elapsed)
 ```
 You see the time reduces on the 2nd call. I.e. Julia has compiled and will do for the rest of the MATLAB session. 
-Comparing this speed to Julia the overhead is presumably due to PyCall. 
+Comparing this speed to Julia the overhead is presumably due to PyCall. If you get errors make sure you are inside this scripts folder when running the script in MATLAB.
 
 An example using imported modules in Julia, for example if you have added #https://github.com/Timmmdavis/JuliaTravisTest in Julia. You could use in the Python script: 
 ```
@@ -157,14 +172,34 @@ An example using imported modules in Julia, for example if you have added #https
 Dont edit the Python scripts in MATLAB as its tab/space adding is rubbish. Notepad++ or another Py editor is better. 
 If you do you will get errors in MATLABs terminal such as: 
 ```
->> CallJuliaMATLABExample
+>> CallJuliaMATLABWithPyCallExample
 Undefined variable "py" or class "py.RunJulia.script".
 
-Error in CallJuliaMATLABExample (line 12)
+Error in CallJuliaMATLABWithPyCallExample (line 12)
 py.RunJulia.script(a,b);
 ```
 
-## Installing/Running on a server (No sudo access)
+## Workflow 2: Precompiling Julia and calling from MATLAB
+#Open julia 1.1.0 with admin rights.
+```
+julia> ] add TravisTest
+julia> ] dev PackageCompiler
+julia> using PackageCompiler
+julia> new_image,old_image=PackageCompiler.compile_package("TravisTest", force = false)
+```
+note if there are errors use 
+```
+julia> revert()
+```
+Write down the resulting location of the sys.dll that is printed to the console. e.g.
+```
+"C:\\Users\\user\\.julia\\dev\\PackageCompiler\\sysimg\\sys.dll"
+```
+Now in the MATLAB script CallJuliaMATLABExampleWithPrecompImage.m change the variable new_image to this file path.
+Change the variable exeloc to the path of the julia executable. 
+Then run the script. It should give a result. 
+
+### Installing/Running on a server (No sudo access)
 Installing on a server (amd-64 Linux Redhat, CentOS release 6.7 (Final))
 Julia-1.0.2
 Matlab 2015a
@@ -251,7 +286,7 @@ using
 cp python-jl /home/user/MATLAB2Julia/python-jl
 ```
 
-and the run CallJuliaMATLABExample but change the line:
+and the run CallJuliaMATLABExampleWithPyCall but change the line:
 ```
 system('python -c "from RunJuliaWithLoadVars import script; script()" >> Log.txt 2>&1') 
 ```
@@ -262,6 +297,6 @@ system('/home/user/MATLAB2Julia/python-jl RunJuliaWithLoadVars.py >> Log.txt 2>&
 This should run
 
 Assuming we have https://github.com/Timmmdavis/JuliaTravisTest installed in julia. 
-If you have MATLAB running and want to do a "vi" command to edit the file put a ! infront. E.g. >> !vi CallJuliaMATLABExample.m
+If you have MATLAB running and want to do a "vi" command to edit the file put a ! infront. E.g. >> !vi CallJuliaMATLABWithPyCallExample.m
 If you get errors check the Log.txt
 exit MATLAB with >> exit

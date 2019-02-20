@@ -28,6 +28,7 @@ def script():
 	#############Julia bit#############
 	#Compute something in Julia (from a module)
 	j = julia.Julia()
+	
 	j.include("SumArrays.jl")
 	d=j.SumArrays(a, b)
 	

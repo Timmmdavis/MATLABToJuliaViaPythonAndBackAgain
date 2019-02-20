@@ -15,7 +15,9 @@ try
 catch
     disp('Python not loaded correctly with MATLAB')
     %Calling system command instead. You wont get good outputs in the
-    %console with this. 
+    %console with this. This also requires julia to compile EVERY time, if
+    %you cannot hook up PyCall try using
+    %'CallJuliaMATLABExampleWithPrecompImage.m'
     tic
     system('python RunJuliaWithLoadVars.py >> Log.txt 2>&1') 
     toc
