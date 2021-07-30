@@ -135,6 +135,11 @@ CallJuliaMATLABexample
 ```
 The MATLAB terminal output should be:
 ```
+3
+```
+Note if this fails check the log: 'Log.txt'. If RunJulia.py stops on line 19, you need to change line 18 so it first cds to the directory containing this github repo. 
+Once working, comment line 7 and 8 in CallJuliaMATLABExampleWithPyCall.m, so a and b are matricies. Now run again and you should get the following result. 
+```
 NumPy Sum result
 [[2. 4. 6. 8.]
  [0. 0. 0. 0.]
