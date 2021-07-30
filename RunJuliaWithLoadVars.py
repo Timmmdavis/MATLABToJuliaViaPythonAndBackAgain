@@ -28,7 +28,7 @@ def script():
 	#############Julia bit#############
 	#Compute something in Julia (from a module)
 	from julia import Main
-	println("Make sure you cd to correct dir here")
+	print('Make sure you cd to correct dir here')
 	Main.include(string(pwd(),"SumArrays.jl"))
 	d=Main.SumArrays(a,b)
 
