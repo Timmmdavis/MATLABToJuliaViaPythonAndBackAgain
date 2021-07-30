@@ -27,11 +27,11 @@ def script():
 
 	#############Julia bit#############
 	#Compute something in Julia (from a module)
-	j = julia.Julia()
-	
-	j.include("SumArrays.jl")
-	d=j.SumArrays(a, b)
-	
+	from julia import Main
+	println("Make sure you cd to correct dir here")
+	Main.include(string(pwd(),"SumArrays.jl"))
+	d=Main.SumArrays(a,b)
+
 	print('Julia Sum result')
 	print(d)
 	
@@ -39,5 +39,5 @@ def script():
 	#Now save as MATLAB matricies. 
 	scipy.io.savemat('PythonOutput.mat', dict(a=a,b=b,c=c,d=d))
 	
-if __name__ == "__main__":
-	script()
+#if __name__ == "__main__":
+#	script(1,2)

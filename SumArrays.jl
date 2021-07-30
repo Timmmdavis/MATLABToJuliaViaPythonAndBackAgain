@@ -1,8 +1,5 @@
-function SumArrays(X::Array,Y::Array)
-Z=zeros(size(X));
-for i=1:length(X)
-	#Rotate to new axes Ax Ay Az
-	Z[i]=X[i]+Y[i];
-end
+function SumArrays(X,Y)
+#Sum the two arrays
+Z=X.+Y;
 return(Z)
 end
